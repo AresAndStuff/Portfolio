@@ -1,27 +1,718 @@
 ---
-import '../styles/global.css';
+interface Props {
+  title: string;
+}
+const { title } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="de" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
-    <meta name="generator" content={Astro.generator} />
-    <title>Astro Basics</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="author" content="Pascal" />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <script is:inline>
+      const theme = (() => {
+        if (
+          typeof localStorage !== 'undefined' &&
+          localStorage.getItem('theme')
+        ) {
+          return localStorage.getItem('theme');
+        }
+        return window.matchMedia('(prefers-color-scheme: light)').matches
+          ? 'light'
+          : 'dark';
+      })();
+      if (theme === 'light') document.documentElement.classList.add('light');
+    </script>
+
+    <style is:global>
+      :root {
+        --bg: #030307;
+        --bg-card: #080811;
+        --bg-card2: #0e0e1a;
+        --line: rgba(127, 255, 178, 0.15);
+        --accent: #7fffb3;
+        --accent-dim: rgba(127, 255, 179, 0.12);
+        --text-hi: #e8e8ff;
+        --text-mid: #a3a3c2;
+        --text-lo: #5a5a78;
+        --mono: 'Space Mono', monospace;
+        --sans: 'Syne', sans-serif;
+      }
+
+      html.light {
+        --bg: #f7f7fc;
+        --bg-card: #ffffff;
+        --bg-card2: #ececf7;
+        --line: rgba(2, 154, 98, 0.15);
+        --accent: #029a62;
+        --accent-dim: rgba(2, 154, 98, 0.1);
+        --text-hi: #121218;
+        --text-mid: #555566;
+        --text-lo: #8a8a9c;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        background-color: var(--bg);
+        color: var(--text-hi);
+        font-family: var(--sans);
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        transition:
+          background-color 0.3s,
+          color 0.3s;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background-image:
+          linear-gradient(var(--line) 1px, transparent 1px),
+          linear-gradient(90deg, var(--line) 1px, transparent 1px);
+        background-size: 64px 64px;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .page {
+        position: relative;
+        z-index: 1;
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 0 3rem;
+      }
+
+      /* ── Navigation ── */
+      .site-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.5rem 3rem;
+        background: rgba(3, 3, 7, 0.85);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--line);
+        transition: background 0.3s;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      html.light .site-header {
+        background: rgba(247, 247, 252, 0.85);
+      }
+
+      .logo-group {
+        font-family: var(--mono);
+        font-size: 15px;
+        color: var(--accent);
+        text-decoration: none;
+        letter-spacing: -0.05em;
+      }
+      .logo-group > em {
+        font-style: normal;
+        color: var(--text-mid);
+        margin-left: 6px;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 2rem;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      .nav-links a {
+        font-family: var(--mono);
+        font-size: 13px;
+        color: var(--text-lo);
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        transition: color 0.2s;
+      }
+      .nav-links a:hover {
+        color: var(--accent);
+      }
+
+      /* ── Hero ── */
+      .section-hero {
+        padding: 8rem 0 5rem;
+      }
+
+      .label {
+        font-family: var(--mono);
+        font-size: 12px;
+        color: var(--accent);
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        margin-bottom: 1.25rem;
+      }
+
+      h1 {
+        font-size: clamp(2.5rem, 6vw, 4.25rem);
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        line-height: 1.1;
+        margin-top: 0;
+        margin-bottom: 2.5rem;
+      }
+
+      h2 {
+        font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        margin-top: 0;
+        margin-bottom: 3.5rem;
+      }
+
+      h3 {
+        font-family: var(--sans);
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--text-hi);
+        margin: 0.5rem 0 0.75rem;
+      }
+
+      p {
+        color: var(--text-mid);
+        font-size: 16px;
+        line-height: 1.7;
+        margin-top: 0;
+      }
+
+      .hero-p {
+        color: var(--text-mid);
+        font-size: 18px;
+        line-height: 1.5;
+        max-width: 50ch;
+        margin-bottom: 2rem;
+      }
+
+      em.accent {
+        font-style: normal;
+        color: var(--accent);
+      }
+
+      hr {
+        border: none;
+        border-top: 1px solid var(--line);
+        margin: 3rem 0;
+      }
+
+      /* ── Buttons ── */
+      .btn-links {
+        display: flex;
+        gap: 1.25rem;
+        margin-top: 2rem;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        font-family: var(--mono);
+        font-size: 14px;
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        padding: 10px 24px;
+        border-radius: 4px;
+        display: inline-block;
+        transition:
+          background 0.2s,
+          color 0.2s,
+          border-color 0.2s,
+          opacity 0.2s;
+      }
+
+      .btn-solid {
+        background: var(--accent);
+        color: var(--bg);
+        font-weight: 700;
+      }
+      .btn-solid:hover {
+        opacity: 0.9;
+      }
+
+      .btn-ghost {
+        font-family: var(--mono);
+        font-size: 14px;
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        padding: 10px 24px;
+        border-radius: 4px;
+        display: inline-block;
+        color: var(--accent);
+        border: 1px solid var(--accent-dim);
+        background: transparent;
+        transition:
+          background 0.2s,
+          border-color 0.2s;
+        cursor: pointer;
+      }
+      .btn-ghost:hover {
+        background: var(--accent-dim);
+        border-color: var(--accent);
+      }
+
+      /* ── Stat Grid (Startseite) ── */
+      .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        margin: 5rem 0 6rem;
+      }
+
+      .stat-card {
+        padding: 0.5rem 0;
+        text-align: center;
+      }
+
+      .stat-card-title {
+        font-family: var(--sans);
+        font-size: 3rem;
+        font-weight: 700;
+        color: var(--text-hi);
+        margin-bottom: 0.5rem;
+      }
+
+      .stat-card-label {
+        font-family: var(--mono);
+        font-size: 13px;
+        color: var(--text-mid);
+        letter-spacing: 0.05em;
+      }
+
+      /* ── Project Cards (Startseite) ── */
+      .section-label-block {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 2rem;
+      }
+
+      .project-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin-bottom: 6rem;
+      }
+
+      .project-card {
+        background: var(--bg-card);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 1.5rem;
+        transition:
+          border-color 0.2s,
+          background 0.2s;
+        text-decoration: none;
+        color: inherit;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      .project-card:hover {
+        border-color: var(--accent-dim);
+        background: var(--bg-card2);
+      }
+
+      .p-card-top {
+        margin-bottom: 2rem;
+      }
+
+      .p-icon-box {
+        width: 32px;
+        height: 32px;
+        background: var(--accent-dim);
+        border: 1px solid rgba(127, 255, 179, 0.1);
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+      }
+      html.light .p-icon-box {
+        border-color: rgba(2, 154, 98, 0.15);
+      }
+
+      .p-icon {
+        color: var(--accent);
+        font-size: 18px;
+      }
+
+      .p-title {
+        font-family: var(--sans);
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--text-hi);
+        margin-bottom: 0.75rem;
+      }
+
+      .p-desc {
+        color: var(--text-mid);
+        font-size: 15px;
+        line-height: 1.6;
+        margin-bottom: 0;
+      }
+
+      .p-label-group {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-family: var(--mono);
+        font-size: 12px;
+        color: var(--text-mid);
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+
+      /* ── CTA Card (Startseite) ── */
+      .cta-card {
+        background: var(--bg-card);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 3rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 6rem;
+      }
+
+      .cta-left {
+        flex: 1;
+        margin-right: 3rem;
+      }
+
+      .cta-left-p {
+        color: var(--text-mid);
+        font-size: 18px;
+        line-height: 1.6;
+        margin-top: -1.5rem;
+        margin-bottom: 0;
+      }
+
+      /* ── Generic Card (about, blog, projects, contact) ── */
+      .card {
+        background: var(--bg-card);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 1.75rem;
+        transition:
+          border-color 0.2s,
+          background 0.2s;
+        color: inherit;
+      }
+      .card:hover {
+        border-color: var(--accent-dim);
+        background: var(--bg-card2);
+      }
+
+      /* ── Stack List (blog, projects) ── */
+      .stack-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-bottom: 6rem;
+      }
+
+      /* ── Grid Cols (about, contact) ── */
+      .grid-cols {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 3rem;
+      }
+
+      /* ── Tags ── */
+      .tag {
+        font-family: var(--mono);
+        font-size: 12px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 3px 8px;
+        border-radius: 3px;
+        background: var(--bg-card2);
+        border: 1px solid var(--line);
+        color: var(--text-mid);
+        display: inline-block;
+      }
+
+      .tag-accent {
+        background: var(--accent-dim);
+        border-color: transparent;
+        color: var(--accent);
+      }
+
+      .inline-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin: 1rem 0;
+      }
+
+      /* ── Timeline (about) ── */
+      .timeline {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 3rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        border-left: 1px solid var(--line);
+        margin-left: 0.5rem;
+      }
+
+      .timeline-item {
+        position: relative;
+        padding: 0 0 2.5rem 2rem;
+      }
+      .timeline-item:last-child {
+        padding-bottom: 0;
+      }
+
+      .timeline-dot {
+        position: absolute;
+        left: -5px;
+        top: 6px;
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--accent);
+        border: 2px solid var(--bg);
+      }
+
+      .timeline-year {
+        font-family: var(--mono);
+        font-size: 12px;
+        color: var(--accent);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin-bottom: 0.35rem;
+      }
+
+      .timeline-title {
+        font-family: var(--sans);
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--text-hi);
+      }
+
+      /* ── Footer ── */
+      .footer-section {
+        background: #000;
+        border-top: 1px solid var(--line);
+        padding: 3rem 0;
+        margin-top: auto;
+      }
+      html.light .footer-section {
+        background: var(--bg-card2);
+      }
+
+      .footer-inner {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 0 3rem;
+        text-align: center;
+      }
+
+      .footer-p {
+        font-family: var(--mono);
+        font-size: 13px;
+        color: var(--text-mid);
+        margin-bottom: 1.5rem;
+      }
+
+      .footer-social-links {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .footer-social-link {
+        font-family: var(--mono);
+        font-size: 13px;
+        color: var(--text-lo);
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        transition: color 0.2s;
+      }
+      .footer-social-link:hover {
+        color: var(--accent);
+      }
+
+      /* ── Theme Toggle ── */
+      #theme-toggle {
+        background: transparent;
+        border: 1px solid var(--line);
+        color: var(--text-lo);
+        font-family: var(--mono);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        cursor: pointer;
+        padding: 6px 12px;
+        border-radius: 4px;
+        transition:
+          background 0.2s,
+          color 0.2s;
+      }
+      #theme-toggle:hover {
+        color: var(--accent);
+        border-color: var(--accent-dim);
+        background: var(--bg-card2);
+      }
+
+      /* ── Responsive ── */
+      @media (max-width: 700px) {
+        .page {
+          padding: 0 1.25rem;
+        }
+        .site-header {
+          padding: 1.25rem 1.25rem;
+        }
+        .nav-links {
+          gap: 1rem;
+        }
+        .project-grid {
+          grid-template-columns: 1fr;
+        }
+        .stat-grid {
+          grid-template-columns: 1fr;
+        }
+        .grid-cols {
+          grid-template-columns: 1fr;
+        }
+        .cta-card {
+          flex-direction: column;
+          gap: 2rem;
+        }
+        .cta-left {
+          margin-right: 0;
+        }
+        .section-hero {
+          padding: 4rem 0 3rem;
+        }
+      }
+    </style>
   </head>
   <body>
+    <header class="site-header">
+      <a href="/" class="logo-group">// pascal.dev <em>_</em></a>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/about">Über mich</a></li>
+          <li><a href="/projects">Projekte</a></li>
+          <li><a href="/blog">Blog</a></li>
+          <li><a href="/contact">Kontakt</a></li>
+        </ul>
+      </nav>
+      <button id="theme-toggle" aria-label="Theme umschalten">
+        <svg
+          id="theme-toggle-sun"
+          class="hidden"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          ><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path
+            d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path
+            d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path
+            d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path
+            d="m19.07 4.93-1.41 1.41"></path></svg
+        >
+
+        <svg
+          id="theme-toggle-moon"
+          class="hidden"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          ><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg
+        >
+      </button>
+    </header>
+
     <slot />
+
+    <footer class="footer-section">
+      <div class="footer-inner">
+        <p class="footer-p">
+          &copy; 2026 PASCAL &nbsp;·&nbsp; Gebaut mit Astro
+        </p>
+        <ul class="footer-social-links">
+          <li><a href="#" class="footer-social-link">Github</a></li>
+          <li><a href="#" class="footer-social-link">LinkedIn</a></li>
+          <li><a href="#" class="footer-social-link">E-Mail</a></li>
+        </ul>
+      </div>
+    </footer>
+
+    <style>
+      /* CSS, um das jeweils inaktive Icon zu verstecken */
+      .hidden {
+        display: none;
+      }
+    </style>
+
+    <script>
+      const toggle = document.getElementById('theme-toggle');
+      const sunIcon = document.getElementById('theme-toggle-sun');
+      const moonIcon = document.getElementById('theme-toggle-moon');
+
+      // Funktion zum Aktualisieren der Icons basierend auf der aktuellen Klasse
+      function updateIcons() {
+        const isLight = document.documentElement.classList.contains('light');
+        if (isLight) {
+          sunIcon!.classList.remove('hidden');
+          moonIcon!.classList.add('hidden');
+        } else {
+          sunIcon!.classList.add('hidden');
+          moonIcon!.classList.remove('hidden');
+        }
+      }
+
+      if (toggle && sunIcon && moonIcon) {
+        // Initiale Anzeige beim Laden der Seite
+        updateIcons();
+
+        // Klick-Event
+        toggle.addEventListener('click', () => {
+          const isLight = document.documentElement.classList.toggle('light');
+          localStorage.setItem('theme', isLight ? 'light' : 'dark');
+          updateIcons();
+        });
+      }
+    </script>
   </body>
 </html>
-
-<style>
-  html,
-  body {
-    margin: 0;
-    width: 100%;
-    height: 100%;
-  }
-</style>
