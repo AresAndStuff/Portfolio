@@ -1,11 +1,72 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
+<Layout title="Pascal | Systemtechniker & Entwickler">
+  <main class="page">
+    <section class="section-hero">
+      <div class="label">Informatiker EFZ / ZÜRICH</div>
+      <h1>Ich baue Systeme,<br> die <em class="accent">denken</em><br> und sich <em class="accent">bewegen</em>.</h1>
+      <div class="btn-links">
+        <a href="/projects" class="btn btn-solid">Projekte ansehen</a>
+        <a href="/contact" class="btn btn-ghost">Kontakt aufnehmen</a>
+      </div>
+    </section>
 
-<Layout>
-	<Welcome />
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-card-title">NixOS</div>
+        <div class="stat-card-label">Daily Driver OS</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-title">ZHAW</div>
+        <div class="stat-card-label">Ab September 2025</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-title">3+</div>
+        <div class="stat-card-label">Open-Source Projekte</div>
+      </div>
+    </div>
+
+    <section>
+      <div class="section-label-block">
+        <h2>Ausgewählte <em class="accent">Projekte</em></h2>
+        <a href="/projects" class="btn-ghost" style="padding: 6px 14px; font-size: 10px;">Alle ansehen</a>
+      </div>
+
+      <div class="project-grid">
+        <a href="/projects/nixos-konfiguration" class="project-card">
+          <div class="p-card-top">
+            <div class="p-icon-box"><span class="p-icon">⬡</span></div>
+            <h3 class="p-title">NixOS Konfiguration</h3>
+            <p class="p-desc">Vollständig deklaratives Linux-System mit Nix-Flakes. Reproduzierbar, versioniert, sauber.</p>
+          </div>
+          <div class="p-label-group"><span>Systems</span></div>
+        </a>
+        <a href="/projects/sorting-visualizer" class="project-card">
+          <div class="p-card-top">
+            <div class="p-icon-box"><span class="p-icon">◈</span></div>
+            <h3 class="p-title">Sorting Visualizer</h3>
+            <p class="p-desc">Browser-App die Sortieralgorithmen in Echtzeit animiert — Bubble, Merge, Quick & mehr.</p>
+          </div>
+          <div class="p-label-group"><span>Web · Algo</span></div>
+        </a>
+        <a href="/projects/bma-idpa" class="project-card">
+          <div class="p-card-top">
+            <div class="p-icon-box"><span class="p-icon">◎</span></div>
+            <h3 class="p-title">BMA / IDPA</h3>
+            <p class="p-desc">Meine Abschlussarbeit — Details & Dokumentation folgen hier im Blog.</p>
+          </div>
+          <div class="p-label-group"><span>WIP</span></div>
+        </a>
+      </div>
+    </section>
+
+    <section class="cta-card">
+      <div class="cta-left">
+        <h2>Zusammenarbeiten?</h2>
+        <p class="cta-left-p">Ich bin offen für spannende Projekte, Praktika und Kontakte.</p>
+      </div>
+      <a href="/contact" class="btn btn-solid">Schreib mir</a>
+    </section>
+  </main>
 </Layout>
