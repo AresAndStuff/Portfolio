@@ -1,0 +1,79 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const skills = [
+  { cat: 'Sprachen', items: ['Python', 'JavaScript / TypeScript', 'Nix', 'Bash', 'C (Grundlagen)'] },
+  { cat: 'Systeme', items: ['NixOS', 'Linux', 'Docker', 'Git', 'SSH'] },
+  { cat: 'Web & Tools', items: ['Astro', 'React', 'Tailwind CSS', 'VS Code', 'Neovim'] },
+  { cat: 'Interessen', items: ['Robotik', 'Mechatronik', 'Embedded Systems', 'Algorithmen', 'Open Source'] },
+];
+
+const timeline = [
+  { year: '2025 →', event: 'ZHAW — Systemtechnik, Robotik & Mechatronik' },
+  { year: '2025', event: 'BMS-Abschluss' },
+  { year: '2021–2025', event: 'Informatiker EFZ (Applikationsentwicklung)' },
+];
+---
+<Layout title="Über mich | Pascal">
+  <main class="page">
+    <section class="section-hero">
+      <div class="label">Über mich</div>
+      <h1>
+        Code schreiben.<br>
+        Systeme verstehen.<br>
+        Roboter <em class="accent">bauen</em>.
+      </h1>
+      <p style="max-width: 50ch; font-size: 14px;">
+        Ich bin Pascal — Informatiker EFZ mit Fachrichtung Applikationsentwicklung,
+        aufgewachsen mit Linux, verliebt in saubere Systeme und fasziniert von allem,
+        was sich bewegt. Im September 2025 starte ich mein Studium an der ZHAW
+        mit Fokus auf Robotik & Mechatronik.
+      </p>
+    </section>
+
+    <hr />
+
+    <section style="margin-bottom: 4rem;">
+      <h2>Werdegang</h2>
+      <ul class="timeline">
+        {timeline.map(t => (
+          <li class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">{t.year}</div>
+            <div class="timeline-title">{t.event}</div>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <hr />
+
+    <section style="margin-bottom: 4rem;">
+      <h2>Skills & Technologien</h2>
+      <div class="grid-cols">
+        {skills.map(s => (
+          <div class="card">
+            <div class="label" style="margin-bottom: 1rem;">{s.cat}</div>
+            <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.5rem;">
+              {s.items.map(item => (
+                <li style="font-family: var(--mono); font-size: 12px; color: var(--text-mid); display: flex; align-items: center; gap: 0.5rem;">
+                  <span style="color: var(--accent); font-size: 10px;">▸</span>{item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section class="card" style="margin-bottom: 6rem;">
+      <h2 style="margin-bottom: 1rem;">Abseits des Codes</h2>
+      <p style="margin-bottom: 0; max-width: 50ch;">
+        Wenn ich nicht am Rechner bin, schraube ich an Hardware, lese über
+        eingebettete Systeme oder experimentiere mit elektronischen Schaltungen.
+        NixOS ist mein täglicher Begleiter — weil ich glaube, dass ein gut
+        konfiguriertes System Kunst ist.
+      </p>
+    </section>
+  </main>
+</Layout>
