@@ -1,0 +1,42 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const channels = [
+  { icon: '✉', label: 'E-Mail', value: 'pascal@example.com', href: 'mailto:pascal@example.com' },
+  { icon: '⌥', label: 'GitHub', value: 'github.com/pascal', href: 'https://github.com' },
+  { icon: '◈', label: 'LinkedIn', value: 'linkedin.com/in/pascal', href: 'https://linkedin.com' },
+];
+---
+<Layout title="Kontakt | Pascal">
+  <main class="page">
+    <section class="section-hero">
+      <div class="label">Kontakt</div>
+      <h1 style="max-width: 480px;">
+        Lass uns <em class="accent">reden</em>.
+      </h1>
+      <p style="max-width: 50ch;">
+        Ob Projekt-Kollaboration, Praktikum, Fragen zu meinen Arbeiten
+        oder einfach ein Austausch über Technik — ich freue mich über jede Nachricht.
+      </p>
+    </section>
+
+    <div class="grid-cols" style="margin-bottom: 3rem;">
+      {channels.map(c => (
+        <a href={c.href} style="text-decoration: none; color: inherit;" target="_blank" rel="noopener">
+          <div class="card" style="height: 100%; display: flex; flex-direction: column; gap: 0.5rem;">
+            <div style="font-size: 24px; color: var(--accent); margin-bottom: 0.5rem;">{c.icon}</div>
+            <div style="font-family: var(--mono); font-size: 10px; color: var(--text-lo); text-transform: uppercase; letter-spacing: 0.1em;">{c.label}</div>
+            <div style="font-size: 14px; font-weight: 700; color: var(--text-hi); word-break: break-all;">{c.value}</div>
+          </div>
+        </a>
+      ))}
+    </div>
+
+    <div class="card" style="border-left: 3px solid var(--accent) !important; padding: 1.5rem 2rem; margin-bottom: 6rem;">
+      <p style="margin: 0; font-size: 13px;">
+        <strong style="color: var(--accent); font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.5rem;">Antwortzeit</strong>
+        Ich antworte in der Regel innerhalb von 24–48 Stunden. Am schnellsten erreichst du mich per E-Mail oder GitHub.
+      </p>
+    </div>
+  </main>
+</Layout>
