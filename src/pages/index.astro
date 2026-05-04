@@ -1,72 +1,144 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { commonData } from '../data/common.js';
+import { indexData } from '../data/index.js';
+
+const url = new URL(Astro.request.url);
+const currentLang = (url.searchParams.get('lang') ||
+  'de') as keyof typeof indexData;
+
+const data = indexData[currentLang] || indexData.de;
+const common = commonData[currentLang] || commonData.de;
+
+// Helper-Funktion für die Sprach-Links
+const l = (path: string) => `${path}?lang=${currentLang}`;
 ---
-<Layout title="Pascal | Systemtechniker & Entwickler">
+
+<Layout title={`${data.label}${common.meta.titleSuffix}`}>
   <main class="page">
     <section class="section-hero">
-      <div class="label">Informatiker EFZ / ZÜRICH</div>
-      <h1>Ich baue Systeme,<br> die <em class="accent">denken</em><br> und sich <em class="accent">bewegen</em>.</h1>
+      <div class="label">{data.label}</div>
+
+      <h1>
+        {data.titleBefore}<br />
+        <em class="accent">{data.titleAccent1}</em><br />
+        {data.titleMiddle}
+        <em class="accent">{data.titleAccent2}</em>.
+      </h1>
+
       <div class="btn-links">
-        <a href="/projects" class="btn btn-solid">Projekte ansehen</a>
-        <a href="/contact" class="btn btn-ghost">Kontakt aufnehmen</a>
+        <a href={l('/projects')} class="btn btn-solid">
+          {data.btnProjects}
+        </a>
+
+        <a href={l('/contact')} class="btn btn-ghost">
+          {data.btnContact}
+        </a>
       </div>
     </section>
 
     <div class="stat-grid">
       <div class="stat-card">
         <div class="stat-card-title">NixOS</div>
-        <div class="stat-card-label">Daily Driver OS</div>
+        <div class="stat-card-label">{data.stats.nixos}</div>
       </div>
+
       <div class="stat-card">
         <div class="stat-card-title">ZHAW</div>
-        <div class="stat-card-label">Ab September 2025</div>
+        <div class="stat-card-label">{data.stats.zhaw}</div>
       </div>
+
       <div class="stat-card">
         <div class="stat-card-title">3+</div>
-        <div class="stat-card-label">Open-Source Projekte</div>
+        <div class="stat-card-label">{data.stats.projects}</div>
       </div>
     </div>
 
     <section>
       <div class="section-label-block">
-        <h2>Ausgewählte <em class="accent">Projekte</em></h2>
-        <a href="/projects" class="btn-ghost" style="padding: 6px 14px; font-size: 10px;">Alle ansehen</a>
+        <h2>
+          {data.featuredTitle}
+          <em class="accent">{data.featuredAccent}</em>
+        </h2>
+
+        <a
+          href={l('/projects')}
+          class="btn-ghost"
+          style="padding: 6px 14px; font-size: 10px;"
+        >
+          {data.featuredBtn}
+        </a>
       </div>
 
       <div class="project-grid">
-        <a href="/projects/nixos-konfiguration" class="project-card">
+        <a href={l('/projects/nixos-konfiguration')} class="project-card">
           <div class="p-card-top">
-            <div class="p-icon-box"><span class="p-icon">⬡</span></div>
-            <h3 class="p-title">NixOS Konfiguration</h3>
-            <p class="p-desc">Vollständig deklaratives Linux-System mit Nix-Flakes. Reproduzierbar, versioniert, sauber.</p>
+            <div class="p-icon-box">
+              <span class="p-icon">⬡</span>
+            </div>
+
+            <h3 class="p-title">{data.project1.title}</h3>
+
+            <p class="p-desc">
+              {data.project1.desc}
+            </p>
           </div>
-          <div class="p-label-group"><span>Systems</span></div>
+
+          <div class="p-label-group">
+            <span>{data.project1.label}</span>
+          </div>
         </a>
-        <a href="/projects/sorting-visualizer" class="project-card">
+
+        <a href={l('/projects/sorting-visualizer')} class="project-card">
           <div class="p-card-top">
-            <div class="p-icon-box"><span class="p-icon">◈</span></div>
-            <h3 class="p-title">Sorting Visualizer</h3>
-            <p class="p-desc">Browser-App die Sortieralgorithmen in Echtzeit animiert — Bubble, Merge, Quick & mehr.</p>
+            <div class="p-icon-box">
+              <span class="p-icon">◈</span>
+            </div>
+
+            <h3 class="p-title">{data.project2.title}</h3>
+
+            <p class="p-desc">
+              {data.project2.desc}
+            </p>
           </div>
-          <div class="p-label-group"><span>Web · Algo</span></div>
+
+          <div class="p-label-group">
+            <span>{data.project2.label}</span>
+          </div>
         </a>
-        <a href="/projects/bma-idpa" class="project-card">
+
+        <a href={l('/projects/bma-idpa')} class="project-card">
           <div class="p-card-top">
-            <div class="p-icon-box"><span class="p-icon">◎</span></div>
-            <h3 class="p-title">BMA / IDPA</h3>
-            <p class="p-desc">Meine Abschlussarbeit — Details & Dokumentation folgen hier im Blog.</p>
+            <div class="p-icon-box">
+              <span class="p-icon">◎</span>
+            </div>
+
+            <h3 class="p-title">{data.project3.title}</h3>
+
+            <p class="p-desc">
+              {data.project3.desc}
+            </p>
           </div>
-          <div class="p-label-group"><span>WIP</span></div>
+
+          <div class="p-label-group">
+            <span>{data.project3.label}</span>
+          </div>
         </a>
       </div>
     </section>
 
     <section class="cta-card">
       <div class="cta-left">
-        <h2>Zusammenarbeiten?</h2>
-        <p class="cta-left-p">Ich bin offen für spannende Projekte, Praktika und Kontakte.</p>
+        <h2>{data.ctaTitle}</h2>
+
+        <p class="cta-left-p">
+          {data.ctaText}
+        </p>
       </div>
-      <a href="/contact" class="btn btn-solid">Schreib mir</a>
+
+      <a href={l('/contact')} class="btn btn-solid">
+        {data.ctaBtn}
+      </a>
     </section>
   </main>
 </Layout>

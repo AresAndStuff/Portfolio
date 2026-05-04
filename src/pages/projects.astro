@@ -1,35 +1,22 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { projectsData } from '../data/projects.js';
 
-const projects = [
-  {
-    num: '01',
-    name: 'NixOS Konfiguration',
-    status: 'Aktiv',
-    stack: ['Nix', 'Linux', 'Flakes', 'Home Manager'],
-    desc: 'Ein vollständig deklaratives Linux-System — Nix-Flakes für reproduzierbare Builds, Home Manager für dotfiles, alles versioniert in Git. Das Ziel: ein System das sich auf jeder Maschine identisch aufbaut, ohne manuelle Schritte.',
-    links: [{ label: 'GitHub', href: '#' }],
-  },
-  {
-    num: '02',
-    name: 'Sorting Visualizer',
-    status: 'Abgeschlossen',
-    stack: ['JavaScript', 'HTML/CSS', 'Algorithmen'],
-    desc: 'Browser-Applikation die klassische Sortieralgorithmen (Bubble Sort, Merge Sort, Quick Sort, Insertion Sort) in Echtzeit animiert. Jeder Vergleich und jeder Swap ist sichtbar — ideal zum Verstehen der Komplexität.',
-    links: [{ label: 'Demo', href: '#' }, { label: 'GitHub', href: '#' }],
-  }
-];
+const url = new URL(Astro.request.url);
+
+const currentLang = (url.searchParams.get('lang') || 'de') as keyof typeof projectsData;
+const data = projectsData[currentLang] || projectsData.de;
 ---
-<Layout title="Projekte | Pascal">
+<Layout title={data.title}>
   <main class="page">
     <section class="section-hero">
-      <div class="label">Ausgewählte Arbeiten</div>
-      <h1>Meine <em class="accent">Projekte</em></h1>
-      <p>Was ich gebaut habe — und warum.</p>
+      <div class="label">{data.heroLabel}</div>
+      <h1>{data.heroTitle}<em class="accent">{data.heroAccent}</em></h1>
+      <p>{data.heroDesc}</p>
     </section>
 
     <div class="stack-list">
-      {projects.map(p => (
+      {data.items.map(p => (
         <article class="card">
           <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 0.75rem;">
             <span style="font-family: var(--mono); font-size: 11px; color: var(--text-lo);">{p.num}</span>

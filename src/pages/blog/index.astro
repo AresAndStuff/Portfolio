@@ -1,53 +1,44 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import { commonData } from '../../data/common.js';
+import { blogData } from '../../data/blog.js';
 
-const posts = [
-  {
-    slug: '#',
-    date: 'Bald',
-    title: 'Meine BMA/IDPA Abschlussarbeit',
-    excerpt: 'Hintergründe, Erkenntnisse und die vollständige Dokumentation meiner schulischen Abschlussarbeit.',
-    tag: 'Schule',
-    wip: true,
-  },
-  {
-    slug: '#',
-    date: 'Bald',
-    title: 'Warum ich NixOS nutze — und warum du es auch solltest',
-    excerpt: 'Deklarative Konfiguration, Nix-Flakes, Home Manager — was mich an NixOS fasziniert und wie mein Setup aussieht.',
-    tag: 'Systems',
-    wip: true,
-  },
-  {
-    slug: '#',
-    date: 'Bald',
-    title: 'Sortieralgorithmen verstehen durch Visualisierung',
-    excerpt: 'Wie ich meinen Sorting Visualizer gebaut habe, was ich dabei gelernt habe, und warum Animationen beim Lernen helfen.',
-    tag: 'Algo · Web',
-    wip: true,
-  }
-];
+const url = Astro.url;
+const currentLang = ['en', 'es'].includes(url.searchParams.get('lang') || '') 
+  ? (url.searchParams.get('lang') as 'en' | 'es') 
+  : 'de';
+
+// Daten aus den neuen, separaten Dateien ziehen
+const t = blogData[currentLang] || blogData.de;
+const common = commonData[currentLang] || commonData.de;
 ---
-<Layout title="Blog | Pascal">
+
+<Layout title={`${t.title}${common.meta.titleSuffix}`}>
   <main class="page">
     <section class="section-hero">
-      <div class="label">Schreiben & Denken</div>
-      <h1>Blog</h1>
-      <p>Technische Artikel, Projekt-Dokumentation und Gedanken zur Informatik.</p>
+      <div class="label">{t.label}</div>
+      <h1>{t.title}</h1>
+      <p>{t.desc}</p>
     </section>
 
     <div class="stack-list">
-      {posts.map(post => (
+      {t.posts.map(post => (
         <article class="card" aria-disabled={post.wip ? 'true' : undefined}>
           <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 0.75rem;">
             <span style="font-family: var(--mono); font-size: 11px; color: var(--text-lo);">{post.date}</span>
             <span class="tag tag-accent">{post.tag}</span>
-            {post.wip && <span style="font-family: var(--mono); color: #ffc850; font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em;">Coming soon</span>}
+            {post.wip && (
+              <span style="font-family: var(--mono); color: #ffc850; font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em;">
+                {t.comingSoon}
+              </span>
+            )}
           </div>
           <h3>{post.title}</h3>
           <p style="margin-bottom: 0.75rem;">{post.excerpt}</p>
           {!post.wip && (
-            <a href={post.slug} style="font-family: var(--mono); font-size: 13px; color: var(--accent); text-decoration: none; align-self: flex-start;">Weiterlesen →</a>
+            <a href="#" style="font-family: var(--mono); font-size: 13px; color: var(--accent); text-decoration: none; align-self: flex-start;">
+              {t.readMore}
+            </a>
           )}
         </article>
       ))}

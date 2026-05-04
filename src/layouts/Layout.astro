@@ -1,12 +1,35 @@
 ---
+import { commonData } from '../data/common.js';
+
 interface Props {
   title: string;
 }
+
+const url = Astro.url;
+
+// Sprachen sicher matchen anhand der neuen Struktur
+const currentLang = ['en', 'es'].includes(url.searchParams.get('lang') || '')
+  ? (url.searchParams.get('lang') as 'en' | 'es')
+  : 'de';
+
+const t = commonData[currentLang] || commonData.de;
 const { title } = Astro.props;
+
+const l = (path: string) => {
+  const cleanPath = path.endsWith('/') ? path : `${path}/`;
+  return `${cleanPath}${currentLang !== 'de' ? `?lang=${currentLang}` : ''}`;
+};
+
+const getLangUrl = (lang: string) => {
+  const params = new URLSearchParams(url.searchParams);
+  if (lang === 'de') params.delete('lang');
+  else params.set('lang', lang);
+  return `${url.pathname}${params.toString() ? `?${params.toString()}` : ''}`;
+};
 ---
 
 <!doctype html>
-<html lang="de" class="scroll-smooth">
+<html lang={currentLang} class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -270,7 +293,7 @@ const { title } = Astro.props;
         border-color: var(--accent);
       }
 
-      /* ── Stat Grid (Startseite) ── */
+      /* ── Stat Grid ── */
       .stat-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -298,7 +321,7 @@ const { title } = Astro.props;
         letter-spacing: 0.05em;
       }
 
-      /* ── Project Cards (Startseite) ── */
+      /* ── Project Cards ── */
       .section-label-block {
         display: flex;
         align-items: center;
@@ -382,7 +405,7 @@ const { title } = Astro.props;
         text-transform: uppercase;
       }
 
-      /* ── CTA Card (Startseite) ── */
+      /* ── CTA Card ── */
       .cta-card {
         background: var(--bg-card);
         border: 1px solid var(--line);
@@ -407,7 +430,7 @@ const { title } = Astro.props;
         margin-bottom: 0;
       }
 
-      /* ── Generic Card (about, blog, projects, contact) ── */
+      /* ── Generic Card ── */
       .card {
         background: var(--bg-card);
         border: 1px solid var(--line);
@@ -423,7 +446,7 @@ const { title } = Astro.props;
         background: var(--bg-card2);
       }
 
-      /* ── Stack List (blog, projects) ── */
+      /* ── Stack List ── */
       .stack-list {
         display: flex;
         flex-direction: column;
@@ -431,7 +454,7 @@ const { title } = Astro.props;
         margin-bottom: 6rem;
       }
 
-      /* ── Grid Cols (about, contact) ── */
+      /* ── Grid Cols ── */
       .grid-cols {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -466,7 +489,7 @@ const { title } = Astro.props;
         margin: 1rem 0;
       }
 
-      /* ── Timeline (about) ── */
+      /* ── Timeline ── */
       .timeline {
         list-style: none;
         padding: 0;
@@ -560,6 +583,92 @@ const { title } = Astro.props;
         color: var(--accent);
       }
 
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .lang-dropdown {
+        position: relative;
+      }
+
+      .lang-btn {
+        background: transparent;
+        border: 1px solid var(--line);
+        color: var(--text-lo);
+        font-family: var(--mono);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        cursor: pointer;
+        padding: 6px 10px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition:
+          color 0.2s,
+          border-color 0.2s,
+          background 0.2s;
+      }
+      .lang-btn:hover,
+      .lang-btn.open {
+        color: var(--accent);
+        border-color: var(--accent-dim);
+        background: var(--bg-card2);
+      }
+
+      .lang-btn svg {
+        transition: transform 0.2s;
+        color: currentColor;
+      }
+      .lang-btn.open svg {
+        transform: rotate(180deg);
+      }
+
+      .lang-menu {
+        display: none;
+        position: absolute;
+        top: calc(100% + 6px);
+        right: 0;
+        background: var(--bg-card);
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        list-style: none;
+        margin: 0;
+        padding: 4px;
+        min-width: 80px;
+        z-index: 200;
+      }
+      .lang-menu.open {
+        display: block;
+      }
+
+      .lang-menu li a {
+        display: block;
+        font-family: var(--mono);
+        font-size: 12px;
+        color: var(--text-lo);
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        padding: 6px 10px;
+        border-radius: 3px;
+        transition:
+          color 0.2s,
+          background 0.2s;
+      }
+      .lang-menu li a:hover,
+      .lang-menu li.active a {
+        color: var(--accent);
+        background: var(--accent-dim);
+      }
+
+      .hidden {
+        display: none;
+      }
+
       /* ── Theme Toggle ── */
       #theme-toggle {
         background: transparent;
@@ -617,50 +726,83 @@ const { title } = Astro.props;
   </head>
   <body>
     <header class="site-header">
-      <a href="/" class="logo-group">// pascal.dev <em>_</em></a>
+      <a href={l('/')} class="logo-group">// pascal.dev <em>_</em></a>
       <nav>
         <ul class="nav-links">
-          <li><a href="/about">Über mich</a></li>
-          <li><a href="/projects">Projekte</a></li>
-          <li><a href="/blog">Blog</a></li>
-          <li><a href="/contact">Kontakt</a></li>
+          <li><a href={l('/about')}>{t.nav.about}</a></li>
+          <li><a href={l('/projects')}>{t.nav.projects}</a></li>
+          <li><a href={l('/blog')}>{t.nav.blog}</a></li>
+          <li><a href={l('/contact')}>{t.nav.contact}</a></li>
         </ul>
       </nav>
-      <button id="theme-toggle" aria-label="Theme umschalten">
-        <svg
-          id="theme-toggle-sun"
-          class="hidden"
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          ><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path
-            d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path
-            d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path
-            d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path
-            d="m19.07 4.93-1.41 1.41"></path></svg
-        >
 
-        <svg
-          id="theme-toggle-moon"
-          class="hidden"
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          ><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg
-        >
-      </button>
+      <div class="header-actions">
+        <div class="lang-dropdown">
+          <button class="lang-btn" id="lang-btn" aria-label="Sprache wechseln">
+            {currentLang.toUpperCase()}
+            <svg
+              width="10"
+              height="10"
+              viewBox="0 0 10 10"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M2 3.5L5 6.5L8 3.5"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"></path>
+            </svg>
+          </button>
+          <ul class="lang-menu" id="lang-menu">
+            <li class={currentLang === 'de' ? 'active' : ''}>
+              <a href={getLangUrl('de')}>DE</a>
+            </li>
+            <li class={currentLang === 'en' ? 'active' : ''}>
+              <a href={getLangUrl('en')}>EN</a>
+            </li>
+            <li class={currentLang === 'es' ? 'active' : ''}>
+              <a href={getLangUrl('es')}>ES</a>
+            </li>
+          </ul>
+        </div>
+
+        <button id="theme-toggle" aria-label="Theme umschalten">
+          <svg
+            id="theme-toggle-sun"
+            class="hidden"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            ><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"
+            ></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"
+            ></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"
+            ></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"
+            ></path><path d="m19.07 4.93-1.41 1.41"></path></svg
+          >
+          <svg
+            id="theme-toggle-moon"
+            class="hidden"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            ><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg
+          >
+        </button>
+      </div>
     </header>
 
     <slot />
@@ -668,29 +810,39 @@ const { title } = Astro.props;
     <footer class="footer-section">
       <div class="footer-inner">
         <p class="footer-p">
-          &copy; 2026 PASCAL &nbsp;·&nbsp; Gebaut mit Astro
+          &copy; 2026 PASCAL &nbsp;·&nbsp; {t.footer.builtWith}
         </p>
         <ul class="footer-social-links">
-          <li><a href="#" class="footer-social-link">Github</a></li>
-          <li><a href="#" class="footer-social-link">LinkedIn</a></li>
-          <li><a href="#" class="footer-social-link">E-Mail</a></li>
+          <li>
+            <a href={t.socialLinks.github} class="footer-social-link">Github</a>
+          </li>
+          <li>
+            <a href={t.socialLinks.linkedin} class="footer-social-link"
+              >LinkedIn</a
+            >
+          </li>
         </ul>
       </div>
     </footer>
-
-    <style>
-      /* CSS, um das jeweils inaktive Icon zu verstecken */
-      .hidden {
-        display: none;
-      }
-    </style>
 
     <script>
       const toggle = document.getElementById('theme-toggle');
       const sunIcon = document.getElementById('theme-toggle-sun');
       const moonIcon = document.getElementById('theme-toggle-moon');
+      const langBtn = document.getElementById('lang-btn');
+      const langMenu = document.getElementById('lang-menu');
 
-      // Funktion zum Aktualisieren der Icons basierend auf der aktuellen Klasse
+      langBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = langMenu!.classList.toggle('open');
+        langBtn!.classList.toggle('open', isOpen);
+      });
+
+      document.addEventListener('click', () => {
+        langMenu?.classList.remove('open');
+        langBtn?.classList.remove('open');
+      });
+
       function updateIcons() {
         const isLight = document.documentElement.classList.contains('light');
         if (isLight) {
@@ -703,10 +855,7 @@ const { title } = Astro.props;
       }
 
       if (toggle && sunIcon && moonIcon) {
-        // Initiale Anzeige beim Laden der Seite
         updateIcons();
-
-        // Klick-Event
         toggle.addEventListener('click', () => {
           const isLight = document.documentElement.classList.toggle('light');
           localStorage.setItem('theme', isLight ? 'light' : 'dark');

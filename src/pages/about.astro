@@ -1,46 +1,45 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { commonData } from '../data/common';
+import { aboutData } from '../data/about';
 
-const skills = [
-  { cat: 'Sprachen', items: ['JavaScript / TypeScript', 'Python', 'Nix', 'Bash', 'C (Grundlagen)'] },
-  { cat: 'Systeme', items: ['NixOS', 'Linux', 'Docker', 'Git', 'SSH'] },
-  { cat: 'Web & Tools', items: ['Astro', 'React', 'Tailwind CSS', 'VS Code', 'Neovim'] },
-  { cat: 'Interessen', items: ['Robotik', 'Mechatronik', 'Embedded Systems', 'Algorithmen', 'Open Source'] },
-];
+const url = Astro.url;
+const currentLang = ['en', 'es'].includes(url.searchParams.get('lang') || '') 
+  ? url.searchParams.get('lang') as 'en' | 'es' 
+  : 'de';
 
+const data = aboutData[currentLang] || aboutData.de;
+const common = commonData[currentLang] || commonData.de;
+
+// Dynamische Timeline basierend auf der Sprache erstellen
 const timeline = [
-  { year: '2025 →', event: 'ZHAW — Systemtechnik, Robotik & Mechatronik' },
-  { year: '2025', event: 'BMS-Abschluss' },
-  { year: '2021–2025', event: 'Informatiker EFZ (Applikationsentwicklung)' },
+  { year: '2025 →', event: data.timelineEvents.zhaw },
+  { year: '2025', event: data.timelineEvents.bms },
+  { year: '2021–2025', event: data.timelineEvents.efz },
 ];
 ---
-<Layout title="Über mich | Pascal">
+<Layout title={`${data.label}${common.meta.titleSuffix}`}>
   <main class="page">
     <section class="section-hero">
-      <div class="label">Über mich</div>
+      <div class="label">{data.label}</div>
       <h1>
-        Code schreiben.<br>
-        Systeme verstehen.<br>
-        Roboter <em class="accent">bauen</em>.
+        {data.titleBefore}<br>
+        {data.titleMiddle}<br>
+        {data.titleAfter}<em class="accent">{data.titleAccent}</em>.
       </h1>
-      <p style="max-width: 50ch; font-size: 14px;">
-        Ich bin Pascal — Informatiker EFZ mit Fachrichtung Applikationsentwicklung,
-        aufgewachsen mit Linux, verliebt in saubere Systeme und fasziniert von allem,
-        was sich bewegt. Im September 2025 starte ich mein Studium an der ZHAW
-        mit Fokus auf Robotik & Mechatronik.
-      </p>
+      <p style="max-width: 50ch; font-size: 14px;">{data.desc}</p>
     </section>
 
     <hr />
 
     <section style="margin-bottom: 4rem;">
-      <h2>Werdegang</h2>
+      <h2>{data.historyTitle}</h2>
       <ul class="timeline">
-        {timeline.map(t => (
+        {timeline.map(item => (
           <li class="timeline-item">
             <div class="timeline-dot"></div>
-            <div class="timeline-year">{t.year}</div>
-            <div class="timeline-title">{t.event}</div>
+            <div class="timeline-year">{item.year}</div>
+            <div class="timeline-title">{item.event}</div>
           </li>
         ))}
       </ul>
@@ -49,9 +48,9 @@ const timeline = [
     <hr />
 
     <section style="margin-bottom: 4rem;">
-      <h2>Skills & Technologien</h2>
+      <h2>{data.skillsTitle}</h2>
       <div class="grid-cols">
-        {skills.map(s => (
+        {data.skills.map(s => (
           <div class="card">
             <div class="label" style="margin-bottom: 1rem;">{s.cat}</div>
             <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.5rem;">
@@ -67,13 +66,8 @@ const timeline = [
     </section>
 
     <section class="card" style="margin-bottom: 6rem;">
-      <h2 style="margin-bottom: 1rem;">Abseits des Codes</h2>
-      <p style="margin-bottom: 0; max-width: 50ch;">
-        Wenn ich nicht am Rechner bin, schraube ich an Hardware, lese über
-        eingebettete Systeme oder experimentiere mit elektronischen Schaltungen.
-        NixOS ist mein täglicher Begleiter — weil ich glaube, dass ein gut
-        konfiguriertes System Kunst ist.
-      </p>
+      <h2 style="margin-bottom: 1rem;">{data.privateTitle}</h2>
+      <p style="margin-bottom: 0; max-width: 50ch;">{data.privateDesc}</p>
     </section>
   </main>
 </Layout>
