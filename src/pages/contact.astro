@@ -31,17 +31,17 @@ const channels = [
       {channels.map(c => (
         <a href={c.href} style="text-decoration: none; color: inherit;" target="_blank" rel="noopener">
           <div class="card" style="height: 100%; display: flex; flex-direction: column; gap: 0.5rem;">
-            <div style="font-size: 24px; color: var(--accent); margin-bottom: 0.5rem;">{c.icon}</div>
-            <div style="font-family: var(--mono); font-size: 10px; color: var(--text-lo); text-transform: uppercase; letter-spacing: 0.1em;">{c.label}</div>
-            <div style="font-size: 14px; font-weight: 700; color: var(--text-hi); word-break: break-all;">{c.value}</div>
+            <div style="font-size: 26px; color: var(--accent); margin-bottom: 0.5rem;">{c.icon}</div>
+            <div style="font-family: var(--mono); font-size: 12px; color: var(--text-lo); text-transform: uppercase; letter-spacing: 0.1em;">{c.label}</div>
+            <div style="font-size: 16px; font-weight: 700; color: var(--text-hi); word-break: break-all;">{c.value}</div>
           </div>
         </a>
       ))}
     </div>
 
     <div class="card" style="border-left: 3px solid var(--accent) !important; padding: 1.5rem 2rem; margin-bottom: 6rem;">
-      <p style="margin: 0; font-size: 13px;">
-        <strong style="color: var(--accent); font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.5rem;">{t.replyTitle}</strong>
+      <p style="margin: 0; font-size: 15px;">
+        <strong style="color: var(--accent); font-family: var(--mono); font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.5rem;">{t.replyTitle}</strong>
         {t.replyText}
       </p>
     </div>

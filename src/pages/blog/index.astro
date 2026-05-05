@@ -25,10 +25,10 @@ const common = commonData[currentLang] || commonData.de;
       {t.posts.map(post => (
         <article class="card" aria-disabled={post.wip ? 'true' : undefined}>
           <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 0.75rem;">
-            <span style="font-family: var(--mono); font-size: 11px; color: var(--text-lo);">{post.date}</span>
+            <span style="font-family: var(--mono); font-size: 13px; color: var(--text-lo);">{post.date}</span>
             <span class="tag tag-accent">{post.tag}</span>
             {post.wip && (
-              <span style="font-family: var(--mono); color: #ffc850; font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em;">
+              <span style="font-family: var(--mono); color: #ffc850; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em;">
                 {t.comingSoon}
               </span>
             )}
@@ -36,7 +36,7 @@ const common = commonData[currentLang] || commonData.de;
           <h3>{post.title}</h3>
           <p style="margin-bottom: 0.75rem;">{post.excerpt}</p>
           {!post.wip && (
-            <a href="#" style="font-family: var(--mono); font-size: 13px; color: var(--accent); text-decoration: none; align-self: flex-start;">
+            <a href="#" style="font-family: var(--mono); font-size: 15px; color: var(--accent); text-decoration: none; align-self: flex-start;">
               {t.readMore}
             </a>
           )}
