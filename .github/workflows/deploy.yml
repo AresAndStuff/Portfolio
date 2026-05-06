@@ -21,13 +21,13 @@ jobs:
             echo "is_node=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Node.js einrichten (falls Framework genutzt wird)
+      - name: Node.js einrichten (v22 für Astro v6)
         if: steps.check_node.outputs.is_node == 'true'
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
-      - name: Abhängigkeiten installieren & Build (für React/SolidJS)
+      - name: Abhängigkeiten installieren & Build
         if: steps.check_node.outputs.is_node == 'true'
         run: |
           npm ci
@@ -39,7 +39,6 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          
           source: ${{ steps.check_node.outputs.is_node == 'true' && 'dist/**' || '**' }}
           target: "/var/www/portfolio"
           strip_components: ${{ steps.check_node.outputs.is_node == 'true' && 1 || 0 }}
