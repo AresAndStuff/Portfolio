@@ -3,7 +3,7 @@ name: Deploy Portfolio
 on:
   push:
     branches:
-      - main  # Falls dein Hauptbranch 'master' heißt, hier anpassen
+      - main
 
 jobs:
   deploy:
@@ -12,7 +12,6 @@ jobs:
       - name: Code auschecken
         uses: actions/checkout@v4
 
-      # Prüft, ob eine package.json existiert (für React/SolidJS in der Zukunft)
       - name: Prüfe auf Node.js Projekt
         id: check_node
         run: |
@@ -40,7 +39,7 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          # Kopiert 'dist/' falls es existiert (Vite/React/Solid), sonst das gesamte Repository
+          
           source: ${{ steps.check_node.outputs.is_node == 'true' && 'dist/**' || '**' }}
           target: "/var/www/portfolio"
           strip_components: ${{ steps.check_node.outputs.is_node == 'true' && 1 || 0 }}
