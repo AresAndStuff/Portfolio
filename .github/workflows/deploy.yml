@@ -39,11 +39,10 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: ${{ steps.check_node.outputs.is_node == 'true' && 'dist/**' || '**' }}
+          # FIX: Copy everything including the newly built dist/ folder
+          source: "**"
           target: "/var/www/portfolio"
-          strip_components: ${{ steps.check_node.outputs.is_node == 'true' && 1 || 0 }}
 
-      # AUTOMATION STEP: Connects via SSH, stops, updates, and restarts the app
       - name: Update and Restart Server via SSH
         uses: appleboy/ssh-action@master
         with:
@@ -53,14 +52,14 @@ jobs:
           script: |
             cd /var/www/portfolio
             
-            # 1. Stop the running app (ignore errors if it wasn't running yet)
+            # 1. Stop the running app if it exists
             pm2 stop portfolio || true
             
-            # 2. Update production packages on your server
-            npm install --production
+            # 2. Update production packages on your server cleanly
+            npm install --omit=dev
             
-            # 3. Start or restart the Astro server using PM2
+            # 3. Start or restart the Astro Node server using PM2
             pm2 start dist/server/entry.mjs --name "portfolio" || pm2 restart portfolio
             
-            # 4. Save PM2 state so it boots up automatically if the server reboots
+            # 4. Save PM2 state
             pm2 save
